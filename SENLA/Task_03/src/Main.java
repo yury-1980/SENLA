@@ -22,23 +22,17 @@ public class Main {
         String[] strings;
         strings = str.split(" ");
         String pattern = "[ауоыиэяюёеАУОЫИЭЮЯЕЁ]";
+
         // Подсчёт гласных в букв
-        // Переделка букв на большие
         for (int i = 0; i < strings.length; i++) {
-            int num3 = 0;
             for (int j = 0; j < strings[i].length(); j++) {
                 if (String.valueOf(strings[i].charAt(j)).matches(pattern)) {
                     num++;
                 }
-                if (String.valueOf(strings[i].charAt(j)).matches(pattern)
-                        && num3 == 0) {
-                    char f = (char) ((strings[i].charAt(j)) - 32);
-
-                    num3++;
-                }
             }
         }
         System.out.println("number of vowels: " + num);
+
         // Сортировка слов по кол-ву гласных
         System.out.println();
         Arrays.sort(strings, new Comparator<String>() {
@@ -65,7 +59,7 @@ public class Main {
         for (String s : strings) {
             System.out.println(s);
         }
-
+        // Переделка букв на большие
         for (int i = 0; i < strings.length; i++) {
             int num3 = 0;
             for (int j = 0; j < strings[i].length(); j++) {
