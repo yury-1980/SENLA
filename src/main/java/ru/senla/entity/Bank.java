@@ -1,8 +1,10 @@
 package ru.senla.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Builder
@@ -11,9 +13,9 @@ import java.time.LocalDateTime;
 @Data
 public class Bank {
 
-    private String cardNumber;
-    private Integer cardPin;
-    private BigDecimal balance;
+    private String numCard;
+    private Integer pinCard;
+    private Double balance;
     private LocalDateTime transactionTime;
     private Boolean blocking;
 }

@@ -1,6 +1,5 @@
 package ru.senla.fabric;
 
-import lombok.Getter;
 import ru.senla.entity.Bank;
 
 import java.io.FileNotFoundException;
@@ -10,16 +9,17 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ReaderFile {
 
-    private static HashMap<String, Bank> bankHashMap = new HashMap<>();
+    private static ConcurrentHashMap<String, Bank> bankHashMap = new ConcurrentHashMap<>();
 
     public void readFile() {
 
-        String cardNumber = null;
-        Integer cardPin = null;
-        BigDecimal balance = null;
+        String numCard = null;
+        Integer pinCard = null;
+        Double balance = null;
         LocalDateTime transactionTime = null;
         Boolean blocking = false;
 
@@ -27,14 +27,14 @@ public class ReaderFile {
             scanner.useLocale(Locale.ENGLISH);
 
             while (scanner.hasNext()) {
-                cardNumber = scanner.next();
-                cardPin = scanner.nextInt();
-                balance = scanner.nextBigDecimal();
+                numCard = scanner.next();
+                pinCard = scanner.nextInt();
+                balance = scanner.nextDouble();
                 transactionTime = LocalDateTime.parse(scanner.next());
                 blocking = scanner.nextBoolean();
 
-                Bank bank = new Bank(cardNumber, cardPin, balance, transactionTime, blocking);
-                bankHashMap.put(cardNumber, bank);
+                Bank bank = new Bank(numCard, pinCard, balance, transactionTime, blocking);
+                bankHashMap.put(numCard, bank);
             }
 
         } catch (FileNotFoundException e) {
@@ -42,7 +42,7 @@ public class ReaderFile {
         }
     }
 
-    public HashMap<String, Bank> getBankHashMap() {
+    public static ConcurrentHashMap<String, Bank> getBankHashMap() {
         return bankHashMap;
     }
 }

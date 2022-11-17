@@ -4,31 +4,19 @@ import ru.senla.entity.Bank;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Map;
 
 public class WriterFile {
 
     public void writerFile() {
 
-        /*Bank bank = Bank.builder()
-                .cardNumber("1111-2222-3333-4444")
-                .cardPin(1111)
-                .balance(BigDecimal.valueOf(500.00))
-                .transactionTime(LocalDateTime.now())
-                .blocking(false)
-                .build();*/
-
-//        Bank bank = new Bank();
         ReaderFile readerFile = new ReaderFile();
 
         try (FileWriter writer = new FileWriter("fileData.txt")) {
 
             for (Bank bank : readerFile.getBankHashMap().values()) {
-                writer.write(bank.getCardNumber());
+                writer.write(bank.getNumCard());
                 writer.append(' ');
-                writer.write(bank.getCardPin().toString());
+                writer.write(bank.getPinCard().toString());
                 writer.append(' ');
                 writer.write(bank.getBalance().toString());
                 writer.append(' ');
@@ -38,9 +26,9 @@ public class WriterFile {
                 writer.append('\n');
                 writer.flush();
             }
-            System.out.println("Ok!");
+            System.out.println("Transaction Ok!");
         } catch (IOException ex) {
-            System.out.println(ex.getMessage());
+            System.out.println("Failed to write to file!!!");
         }
     }
 }
