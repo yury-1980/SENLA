@@ -4,26 +4,30 @@ import ru.senla.entity.Bank;
 import ru.senla.fabric.WriterFile;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static ru.senla.validation.StringValidation.regCard;
+import static ru.senla.validation.StringValidationConst.*;
 
 public class MenuService {
 
-    private WriterFile writerFile = new WriterFile();
+    private final WriterFile writerFile = new WriterFile();
 
     public Double getBalanceCard(String numCard, ConcurrentHashMap<String, Bank> bankHashMap) {
         return bankHashMap.get(numCard).getBalance();
     }
+
 
     public boolean scanPin(String pinCard, String numCard, ConcurrentHashMap<String, Bank> bankHashMap) {
         Integer pin = Integer.parseInt(pinCard);
         return bankHashMap.get(numCard).getPinCard().equals(pin);
     }
 
+
     public Double withdrawBalance(String numCard, String amount, ConcurrentHashMap<String, Bank> bankHashMap) {
 
-        if (bankHashMap.get(numCard).getBalance() >= Double.parseDouble(amount)) {
+        if (bankHashMap.get(numCard).getBalance() >= Double.parseDouble(amount)
+                && LIMIT >= Double.parseDouble(amount)) {
             Double aDouble = bankHashMap.get(numCard).getBalance() - Double.parseDouble(amount);
             bankHashMap.get(numCard).setBalance(aDouble);
         } else {
@@ -32,6 +36,7 @@ public class MenuService {
         return bankHashMap.get(numCard).getBalance();
     }
 
+
     public Double topUpAccount(String numCard, String amount, ConcurrentHashMap<String, Bank> bankHashMap) {
 
         Double aDouble = bankHashMap.get(numCard).getBalance() + Double.parseDouble(amount);
@@ -39,17 +44,39 @@ public class MenuService {
         return bankHashMap.get(numCard).getBalance();
     }
 
+
     public boolean cardVerification(String numCard, ConcurrentHashMap<String, Bank> bankHashMap) {
-        return numCard.matches(regCard) && bankHashMap.containsKey(numCard)
-                && !(bankHashMap.get(numCard).getBlocking());
+
+        LocalDateTime timeCard;
+        LocalDateTime now;
+        long diff;
+
+        if (numCard.matches(REG_CARD) && bankHashMap.containsKey(numCard)) {
+            timeCard = bankHashMap.get(numCard).getTransactionTime();
+            now = LocalDateTime.now();
+            diff = ChronoUnit.SECONDS.between(now, timeCard);
+
+            if (!(bankHashMap.get(numCard).getBlocking())) {
+                return true;
+            } else if (bankHashMap.get(numCard).getBlocking() && diff <= 0) {
+                bankHashMap.get(numCard).setBlocking(false);
+                return true;
+            } else {
+                System.out.println("Your card is blocked until " + bankHashMap.get(numCard).getTransactionTime());
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
+
 
     public void pinControl(int numPin, String numCard, ConcurrentHashMap<String, Bank> bankHashMap) {
 
         if (numPin == 3) {
             bankHashMap.get(numCard).setBlocking(true);
-            bankHashMap.get(numCard).setTransactionTime(LocalDateTime.now());
-            System.out.println("Your card is blocked for 1 day!!!\n");
+            bankHashMap.get(numCard).setTransactionTime(LocalDateTime.now().plusMinutes(BLOCKING_MINUTES));
+            System.out.println("Your card is blocked for " + BLOCKING_DAYS + " day!!!\n");
             writerFile.writerFile();
             System.exit(0);
         }

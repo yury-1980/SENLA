@@ -8,7 +8,7 @@ import ru.senla.service.MenuService;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static ru.senla.validation.StringValidation.*;
+import static ru.senla.validation.StringValidationConst.*;
 
 public class Menu {
 
@@ -42,7 +42,7 @@ public class Menu {
             System.out.print("Enter pin: ");
             pinCard = scanner.next();
 
-            if (pinCard.matches(regPin) && menuService.scanPin(pinCard, numCard, bankHashMap)) {
+            if (pinCard.matches(REG_PIN) && menuService.scanPin(pinCard, numCard, bankHashMap)) {
                 System.out.println("Pin code Ok!\n");
                 break;
             } else {
@@ -54,14 +54,14 @@ public class Menu {
 
         while (!(exit == 1)) {
             System.out.println("1 - Check card balance");
-            System.out.println("2 - Withdraw money from the account");
+            System.out.println("2 - Withdraw money from the account (max. 100,000)");
             System.out.println("3 - Top up the balance (max. 1,000,000)");
             System.out.println("4 - EXIT");
             System.out.print("Enter transaction number: ");
 
             numMenu = scanner.next();
 
-            if (numMenu.matches(regNumMenu)) {
+            if (numMenu.matches(REG_NUM_MENU)) {
 
                 switch (numMenu) {
                     case "1":
@@ -74,7 +74,7 @@ public class Menu {
                             System.out.print("Enter amount to withdraw: ");
                             String amount = scanner.next();
 
-                            if (amount.matches(regWithdraw)) {
+                            if (amount.matches(REG_WITHDRAW)) {
                                 System.out.println("Balance: " + menuService.withdrawBalance(numCard, amount,
                                         bankHashMap) + '\n');
                                 writerFile.writerFile();
@@ -91,7 +91,7 @@ public class Menu {
                             System.out.print("Enter amount: ");
                             String amount = scanner.next();
 
-                            if (amount.matches(regMaxAmount)) {
+                            if (amount.matches(REG_MAX_AMOUNT)) {
                                 System.out.println("Balance: " + menuService.topUpAccount(numCard, amount,
                                         bankHashMap) + '\n');
                                 writerFile.writerFile();
