@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class Bank {
 
     private String numCard;
-    private Integer pinCard;
+    private String pinCard;
     private Double balance;
     private LocalDateTime transactionTime;
     private Boolean blocking;

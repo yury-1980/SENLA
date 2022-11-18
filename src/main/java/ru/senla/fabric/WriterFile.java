@@ -9,12 +9,12 @@ public class WriterFile {
 
     public void writerFile() {
 
-        try (FileWriter writer = new FileWriter("src/main/resources/fileData.txt")) {
+        try (FileWriter writer = new FileWriter("fileData.txt")) {
 
             for (Bank bank : ReaderFile.getBankHashMap().values()) {
                 writer.write(bank.getNumCard());
                 writer.append(' ');
-                writer.write(bank.getPinCard().toString());
+                writer.write(bank.getPinCard());
                 writer.append(' ');
                 writer.write(bank.getBalance().toString());
                 writer.append(' ');

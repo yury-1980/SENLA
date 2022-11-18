@@ -4,6 +4,7 @@ import ru.senla.entity.Bank;
 import ru.senla.fabric.WriterFile;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -19,8 +20,19 @@ public class MenuService {
 
 
     public boolean scanPin(String pinCard, String numCard, ConcurrentHashMap<String, Bank> bankHashMap) {
-        Integer pin = Integer.parseInt(pinCard);
-        return bankHashMap.get(numCard).getPinCard().equals(pin);
+        return bankHashMap.get(numCard).getPinCard().equals(pinCard);
+    }
+
+
+    public void pinControl(int numPin, String numCard, ConcurrentHashMap<String, Bank> bankHashMap) {
+
+        if (numPin == 3) {
+            bankHashMap.get(numCard).setBlocking(true);
+            bankHashMap.get(numCard).setTransactionTime(LocalDateTime.now().plusDays(BLOCKING_DAYS));
+            System.out.println("Your card is blocked for " + BLOCKING_DAYS + " day!!!\n");
+            writerFile.writerFile();
+            System.exit(0);
+        }
     }
 
 
@@ -62,23 +74,12 @@ public class MenuService {
                 bankHashMap.get(numCard).setBlocking(false);
                 return true;
             } else {
-                System.out.println("Your card is blocked until " + bankHashMap.get(numCard).getTransactionTime());
+                System.out.println("Your card is blocked until - " + bankHashMap.get(numCard).getTransactionTime()
+                        .format(DateTimeFormatter.ofPattern("d:MM:uuuu HH:mm:ss")));
                 return false;
             }
         } else {
             return false;
-        }
-    }
-
-
-    public void pinControl(int numPin, String numCard, ConcurrentHashMap<String, Bank> bankHashMap) {
-
-        if (numPin == 3) {
-            bankHashMap.get(numCard).setBlocking(true);
-            bankHashMap.get(numCard).setTransactionTime(LocalDateTime.now().plusMinutes(BLOCKING_MINUTES));
-            System.out.println("Your card is blocked for " + BLOCKING_DAYS + " day!!!\n");
-            writerFile.writerFile();
-            System.exit(0);
         }
     }
 }

@@ -39,14 +39,14 @@ public class Menu {
         }
 
         while (true) {
-            System.out.print("Enter pin: ");
+            System.out.print("Enter pin, 4 digits.: ");
             pinCard = scanner.next();
 
             if (pinCard.matches(REG_PIN) && menuService.scanPin(pinCard, numCard, bankHashMap)) {
                 System.out.println("Pin code Ok!\n");
                 break;
             } else {
-                System.out.println("Wrong pin!!! : " + pinCard + '\n');
+                System.out.println("Wrong pin!!!: " + pinCard + '\n');
                 numPin++;
                 menuService.pinControl(numPin, numCard, bankHashMap);
             }

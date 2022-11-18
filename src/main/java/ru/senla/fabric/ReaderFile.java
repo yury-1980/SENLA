@@ -4,12 +4,14 @@ import ru.senla.entity.Bank;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.time.format.DateTimeParseException;
+import java.util.InputMismatchException;
 import java.util.Locale;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static ru.senla.validation.StringValidationConst.*;
 
 public class ReaderFile {
 
@@ -17,18 +19,27 @@ public class ReaderFile {
 
     public void readFile() {
 
-        String numCard = null;
-        Integer pinCard = null;
-        Double balance = null;
+        String numCard;
+        String pinCard;
+        Double balance = 0.0;
         LocalDateTime transactionTime = null;
-        Boolean blocking = false;
+        boolean blocking = false;
 
-        try (Scanner scanner = new Scanner(new FileReader("src/main/resources/fileData.txt"))) {
+        try (Scanner scanner = new Scanner(new FileReader("fileData.txt"))) {
             scanner.useLocale(Locale.ENGLISH);
 
             while (scanner.hasNext()) {
                 numCard = scanner.next();
-                pinCard = scanner.nextInt();
+
+                if (!numCard.matches(REG_CARD)) {
+                    numCard = "0000-0000-0000-0000";
+                }
+
+                pinCard = scanner.next();
+
+                if (!pinCard.matches(REG_PIN)) {
+                    pinCard = "0000";
+                }
                 balance = scanner.nextDouble();
                 transactionTime = LocalDateTime.parse(scanner.next());
                 blocking = scanner.nextBoolean();
@@ -37,8 +48,9 @@ public class ReaderFile {
                 bankHashMap.put(numCard, bank);
             }
 
-        } catch (FileNotFoundException e) {
-            System.out.println("File Not Found!!!");
+        } catch (FileNotFoundException | DateTimeParseException | InputMismatchException e) {
+//            e.printStackTrace();
+            System.out.println("File not found or invalid data!!!");
         }
     }
 
